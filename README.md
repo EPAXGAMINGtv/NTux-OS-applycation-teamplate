@@ -18,7 +18,7 @@ make run
 
 1. Builds `src/$(APP_NAME).c` → `out/$(APP_NAME).elf`
 2. Clones NTux-OS into `../NTux-OS` if not present
-3. Copies the ELF into `NTux-OS/userspace/bin/`
+3. Copies the ELF into `fat0/boot/modules`
 4. Builds the full OS + ISO in QEMU
 
 ## Customization

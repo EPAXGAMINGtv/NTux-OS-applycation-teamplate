@@ -44,30 +44,33 @@ static void print_time(const ntux_time_t* t) {
 
 void ntux_user_entry(void) {
     sys_set_text_color(0xFF8CC6FFu);
-    puts("           .:============:.");
-    puts("        .::==============:.");
-    puts("      .::=::        ::=::=.");
-    puts("     .::=::  NTux    ::=::.");
-    puts("     .::=::  OS      ::=::.");
-    puts("      .::=::        ::=::=.");
-    puts("        .::==============:.");
-    puts("           '::==========:'");
+    printf(
+    " /$$   /$$ /$$$$$$$$                          /$$$$$$   /$$$$$$ \n"
+    "| $$$ | $$|__  $$__/                         /$$__  $$ /$$__  $$\n"
+    "| $$$$| $$   | $$ /$$   /$$ /$$   /$$      | $$  \\ $$| $$  \\__/\n"
+    "| $$ $$ $$   | $$| $$  | $$|  $$ /$$/      | $$  | $$|  $$$$$$ \n"
+    "| $$  $$$$   | $$| $$  | $$ \\  $$$$/       | $$  | $$ \\____  $$\n"
+    "| $$\\  $$$   | $$| $$  | $$  >$$  $$       | $$  | $$ /$$  \\ $$\n"
+    "| $$ \\  $$   | $$|  $$$$$$/ /$$/\\  $$      |  $$$$$$/|  $$$$$$/\n"
+    "|__/  \\__/   |__/ \\______/ |__/  \\__/       \\______/  \\______/ \n"
+    );
+
     sys_set_text_color(0xFFFFFFFFu);
-    puts("");
+    printf("");
     sys_set_text_color(0xFF7CFFB2u);
-    puts("epaxgaming@NTux-OS");
+    printf("epaxgaming@NTux-OS\n");
     sys_set_text_color(0xFFFFFFFFu);
-    puts("-------------------------");
+    printf("-------------------------\n");
     sys_set_text_color(0xFFB3A6FFu);
-    puts("OS: NTux-OS x86_64");
-    puts("Kernel: NTux");
+    printf("OS: NTux-OS x86_64\n");
+    printf("Kernel: NTux v2\n");
     sys_set_text_color(0xFFFFFFFFu);
 
     ntux_time_t t;
     if (sys_get_time(&t) == 0) {
         print_time(&t);
     } else {
-        puts("Time: N/A");
+        printf("Time: N/A\n");
     }
 
     uint64_t ticks = sys_get_ticks();
@@ -76,7 +79,7 @@ void ntux_user_entry(void) {
     uint64_t hrs = mins / 60u;
     seconds %= 60u;
     mins %= 60u;
-    sys_write("Uptime: ", 8);
+    printf("Uptime: ", 8);
     print_u64(hrs);
     putchar(':');
     print_2((uint32_t)mins);
@@ -92,9 +95,9 @@ void ntux_user_entry(void) {
         print_u64((uint64_t)fb.height);
         sys_write(" @ ", 3);
         print_u64((uint64_t)fb.bpp);
-        puts(" bpp");
+        printf(" bpp\n");
     } else {
-        puts("Display: N/A");
+        printf("Display: N/A\n");
     }
 
     ntux_block_device_info_t devs[16];
@@ -104,14 +107,14 @@ void ntux_user_entry(void) {
         print_u64(dev_count);
         putchar('\n');
     } else {
-        puts("Drives: N/A");
+        printf("Drives: N/A\n");
     }
 
-    puts("CPU: Unknown");
-    puts("GPU: Unknown");
-    puts("Memory: N/A");
-    puts("Swap: N/A");
-    puts("Locale: de_DE.UTF-8");
-
+    printf("CPU: Unknown\n");
+    printf("GPU: Unknown\n");
+    printf("Memory: N/A\n");
+    printf("Swap: N/A\n");
+    printf("Locale: de_DE.UTF-8\n");
+    //sys_task_add_module("konsole");
     sys_exit(0);
 }

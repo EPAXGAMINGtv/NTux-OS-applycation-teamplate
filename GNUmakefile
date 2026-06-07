@@ -4,7 +4,7 @@
 # Usage:
 #   make                    # build myapp.elf
 #   make APP_NAME=foo       # build foo.elf from src/foo.c
-#   make APP_NAME=foo APP_BASE=0x12340000
+#   make run                # build + deploy to NTux-OS + boot in QEMU
 #   make clean
 #
 
@@ -22,6 +22,10 @@ LDFLAGS := -m elf_x86_64 -nostdlib -static -T linker.ld
 APP_NAME ?= myapp
 APP_BASE ?= 0x00300000
 
+# === NTux-OS deployment ===
+NTUX_OS_DIR ?= NTux-OS
+NTUX_OS_REPO ?= https://github.com/EPAXGAMINGtv/NTux-OS-V2.git
+
 # === Libc runtime (included locally) ===
 RUNTIME_C_SRC := $(wildcard libc/*.c)
 RUNTIME_ASM_SRC := $(wildcard libc/*.asm)
@@ -32,7 +36,7 @@ RUNTIME_OBJ := $(RUNTIME_C_OBJ) $(RUNTIME_ASM_OBJ)
 OBJ_DIR := obj
 OUT_DIR := out
 
-.PHONY: all clean
+.PHONY: all clean run
 
 all: $(OUT_DIR)/$(APP_NAME).elf
 
@@ -52,6 +56,18 @@ obj/libc/%.o: libc/%.c
 obj/libc/%.o: libc/%.asm
 	@mkdir -p $(dir $@)
 	$(ASM) $< -o $@
+
+run: $(OUT_DIR)/$(APP_NAME).elf
+	@if [ ! -d "$(NTUX_OS_DIR)" ]; then \
+		echo "Cloning NTux-OS into $(NTUX_OS_DIR)..."; \
+		git clone $(NTUX_OS_REPO) $(NTUX_OS_DIR); \
+		cd $(NTUX_OS_DIR) && git submodule update --init; \
+	fi
+	@mkdir -p $(NTUX_OS_DIR)/userspace/bin
+	@cp $(OUT_DIR)/$(APP_NAME).elf $(NTUX_OS_DIR)/userspace/bin/$(APP_NAME).elf
+	@echo "==> Deployed $(APP_NAME).elf to NTux-OS"
+	@echo "==> Building full OS and launching QEMU..."
+	@$(MAKE) -C $(NTUX_OS_DIR) run
 
 clean:
 	rm -rf $(OBJ_DIR) $(OUT_DIR)

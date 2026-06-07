@@ -67,7 +67,14 @@ run: $(OUT_DIR)/$(APP_NAME).elf
 	@cp $(OUT_DIR)/$(APP_NAME).elf $(NTUX_OS_DIR)/userspace/bin/$(APP_NAME).elf
 	@echo "==> Deployed $(APP_NAME).elf to NTux-OS"
 	@echo "==> Building full OS and launching QEMU..."
-	@$(MAKE) -C $(NTUX_OS_DIR) run
+	-$(MAKE) -C $(NTUX_OS_DIR) run
+	@if [ ! -f $(NTUX_OS_DIR)/NTux-OS-x86_64.iso ]; then \
+		echo "ISO build failed, building kernel and creating ISO directly..."; \
+		$(MAKE) -C $(NTUX_OS_DIR) kernel; \
+		$(MAKE) -C $(NTUX_OS_DIR) NTux-OS-x86_64.iso -i; \
+	fi
+	@echo "==> Starting QEMU..."
+	cd $(NTUX_OS_DIR) && qemu-system-x86_64 -enable-kvm -cpu host -m 8G -cdrom NTux-OS-x86_64.iso -serial stdio
 
 clean:
-	rm -rf $(OBJ_DIR) $(OUT_DIR)
+	rm -rf $(OBJ_DIR) $(OUT_DIR) NTux-OS

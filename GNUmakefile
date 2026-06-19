@@ -14,7 +14,8 @@ ASM := as
 
 CFLAGS := -std=gnu11 -O2 -g -Wall -Wextra \
           -ffreestanding -fno-stack-protector -fno-pie \
-          -m64 -nostdlib -nostdinc
+          -m64 -nostdlib -nostdinc \
+          -isystem include
 CPPFLAGS := -Iinclude
 LDFLAGS := -m elf_x86_64 -nostdlib -static -T linker.ld
 
